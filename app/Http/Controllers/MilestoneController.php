@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ProgressService;
 use App\Services\MilestoneDependencyService;
 use App\Http\Requests\MilestoneRequest;
 use App\Models\Milestone;
@@ -12,7 +13,12 @@ class MilestoneController extends Controller
     public function index(Project $project)
     {
         $milestones = $project->milestones()->with('dependencies')->orderBy('position')->orderBy('due_date')->get();
-        return view('milestones.index', compact('project', 'milestones'));
+
+        $service = new ProgressService();
+        $projectProgress = $service->projectProgress($project);
+        $progressByMilestone = $milestones->mapWithKeys(fn ($m) => [$m->id => $service->milestoneProgress($m)]);
+
+        return view('milestones.index', compact('project', 'milestones', 'projectProgress', 'progressByMilestone'));
     }
 
     public function create(Project $project)
