@@ -12,7 +12,7 @@
         <tr>
             <td>{{ $m->title }}</td>
             <td>{{ $m->due_date->format('Y-m-d') }}</td>
-            <td>{{ $m->status }}</td>
+            <td>{{ $m->status }} @if ($m->is_overdue) <strong style="color:red">(OVERDUE)</strong> @endif</td>
 	    <td>{{ $progressByMilestone[$m->id] }}%</td>
             <td>{{ $m->dependencies->pluck('title')->join(', ') ?: '-' }}</td>
             <td>
