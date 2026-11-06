@@ -1,7 +1,13 @@
 <?php
 
+use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::middleware('auth')->group(function () {
+    Route::resource('projects.milestones', MilestoneController::class)->except('show');
+});
 
 Route::get('/', function () {
     return view('welcome');
