@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MilestoneDependencyService;
 use App\Http\Requests\MilestoneRequest;
 use App\Models\Milestone;
 use App\Models\Project;
@@ -37,6 +38,11 @@ class MilestoneController extends Controller
     public function update(MilestoneRequest $request, Project $project, Milestone $milestone)
     {
         abort_unless($milestone->project_id === $project->id, 404);
+
+	if ((new MilestoneDependencyService())->createsCycle($milestone->id, $request->	input('dependencies', []))) {
+    		return back()->withInput()->withErrors(['dependencies' => 'These dependencies would create a loop.']);
+	}
+
         $milestone->update($request->safe()->except('dependencies'));
         $milestone->dependencies()->sync($request->input('dependencies', []));
         return redirect()->route('projects.milestones.index', $project)->with('success', 'Milestone updated.');
