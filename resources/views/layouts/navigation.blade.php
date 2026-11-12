@@ -15,6 +15,33 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    {{-- Browse Projects: visible to all authenticated users --}}
+                    <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.index')">
+                        {{ __('Browse Projects') }}
+                    </x-nav-link>
+
+                    @auth
+                        @if(auth()->user()->isClient())
+                            {{-- Client-only links --}}
+                            <x-nav-link :href="route('projects.create')" :active="request()->routeIs('projects.create')">
+                                {{ __('Post a Project') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('my-projects.index')" :active="request()->routeIs('my-projects.index')">
+                                {{ __('My Projects') }}
+                            </x-nav-link>
+                        @endif
+
+                        @if(auth()->user()->isFreelancer())
+                            {{-- Freelancer-only links --}}
+                            <x-nav-link :href="route('portfolio.index')" :active="request()->routeIs('portfolio.*')">
+                                {{ __('My Portfolio') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('freelancer.profile.edit')" :active="request()->routeIs('freelancer.profile.*')">
+                                {{ __('My Profile') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
@@ -70,6 +97,30 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.index')">
+                {{ __('Browse Projects') }}
+            </x-responsive-nav-link>
+
+            @auth
+                @if(auth()->user()->isClient())
+                    <x-responsive-nav-link :href="route('projects.create')" :active="request()->routeIs('projects.create')">
+                        {{ __('Post a Project') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('my-projects.index')" :active="request()->routeIs('my-projects.index')">
+                        {{ __('My Projects') }}
+                    </x-responsive-nav-link>
+                @endif
+
+                @if(auth()->user()->isFreelancer())
+                    <x-responsive-nav-link :href="route('portfolio.index')" :active="request()->routeIs('portfolio.*')">
+                        {{ __('My Portfolio') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('freelancer.profile.edit')" :active="request()->routeIs('freelancer.profile.*')">
+                        {{ __('My Profile') }}
+                    </x-responsive-nav-link>
+                @endif
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->
