@@ -24,7 +24,7 @@ class MilestoneController extends Controller
     public function create(Project $project)
     {
         $others = $project->milestones;
-        return view('milestones.form', ['project' => $project, 'milestone' => new Milestone(), 'others' => $others]);
+        return view('milestones.create', ['project' => $project, 'milestone' => new Milestone(), 'others' => $others]);
     }
 
     public function store(MilestoneRequest $request, Project $project)
@@ -38,7 +38,7 @@ class MilestoneController extends Controller
     {
         abort_unless($milestone->project_id === $project->id, 404);
         $others = $project->milestones->where('id', '!=', $milestone->id);
-        return view('milestones.form', compact('project', 'milestone', 'others'));
+        return view('milestones.edit', compact('project', 'milestone', 'others'));
     }
 
     public function update(MilestoneRequest $request, Project $project, Milestone $milestone)

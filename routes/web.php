@@ -4,6 +4,7 @@ use App\Http\Controllers\FreelancerProfileController;
 use App\Http\Controllers\FreelancerPublicProfileController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -49,8 +50,14 @@ Route::middleware('auth')->group(function () {
     // Client's own project list (separate from discovery)
     Route::get('/my-projects', [ProjectController::class, 'index'])->name('my-projects.index');
 
-    // ── Milestones (Walid's module — untouched) ───────────────────────────────
+    // ── Milestones & Escrow (Requirement R11) ──────────────────────────────────
+// ── Milestones & Escrow (Requirement R11) ──────────────────────────────────
     Route::resource('projects.milestones', MilestoneController::class)->except('show');
+    
+    Route::get('/milestones/{milestone}/escrow', [PaymentController::class, 'show'])->name('milestones.escrow');
+    Route::post('/milestones/{milestone}/fund', [PaymentController::class, 'fund'])->name('milestones.fund');
+    Route::post('/milestones/{milestone}/release', [PaymentController::class, 'release'])->name('milestones.release');
+    Route::post('/milestones/{milestone}/refund', [PaymentController::class, 'refund'])->name('milestones.refund');
 
     // ── Freelancer profile & skills ───────────────────────────────────────────
     Route::get('/freelancer/profile', [FreelancerProfileController::class, 'edit'])->name('freelancer.profile.edit');
@@ -67,6 +74,9 @@ Route::middleware('auth')->group(function () {
 
     // ── Public freelancer profiles ────────────────────────────────────────────
     Route::get('/freelancers/{user}', [FreelancerPublicProfileController::class, 'show'])->name('freelancers.show');
+
+    
+
 });
 
 require __DIR__ . '/auth.php';
