@@ -34,4 +34,9 @@ class Milestone extends Model
     {
         return $this->belongsToMany(Milestone::class, 'milestone_dependencies', 'depends_on_id', 'milestone_id');
     }
+    
+    public function escrowLedger()
+    {
+        return $this->hasOne(EscrowLedger::class);
+    }
 }
