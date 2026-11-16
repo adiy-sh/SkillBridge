@@ -21,7 +21,7 @@ class PortfolioController extends Controller
      */
     public function index(Request $request): View
     {
-        $user    = $request->user();
+        $user = $request->user();
         abort_unless($user->isFreelancer(), 403);
 
         $profile = $user->freelancerProfile
@@ -59,47 +59,50 @@ class PortfolioController extends Controller
                          ->with('success', 'Portfolio item added.');
     }
 
-    public function edit(PortfolioItem $portfolioItem): View
+    /**
+     * Note: the parameter is named $portfolio to match the route
+     * parameter {portfolio} created by Route::resource('portfolio', ...).
+     */
+    public function edit(PortfolioItem $portfolio): View
     {
-        $this->authorize('update', $portfolioItem);
+        $this->authorize('update', $portfolio);
 
         $types = config('skillbridge.portfolio_types');
 
-        return view('portfolio.edit', ['item' => $portfolioItem, 'types' => $types]);
+        return view('portfolio.edit', ['item' => $portfolio, 'types' => $types]);
     }
 
-    public function update(PortfolioItemRequest $request, PortfolioItem $portfolioItem): RedirectResponse
+    public function update(PortfolioItemRequest $request, PortfolioItem $portfolio): RedirectResponse
     {
-        $this->authorize('update', $portfolioItem);
+        $this->authorize('update', $portfolio);
 
         $data = $request->safe()->except('file');
 
         if ($request->hasFile('file')) {
             // Remove old file if replacing
-            if ($portfolioItem->file_path) {
-                $this->fileService->delete($portfolioItem->file_path);
+            if ($portfolio->file_path) {
+                $this->fileService->delete($portfolio->file_path);
             }
             $data['file_path'] = $this->fileService->store($request->file('file'));
         }
 
-        $portfolioItem->update($data);
+        $portfolio->update($data);
 
         return redirect()->route('portfolio.index')
                          ->with('success', 'Portfolio item updated.');
     }
 
-    public function destroy(PortfolioItem $portfolioItem): RedirectResponse
+    public function destroy(PortfolioItem $portfolio): RedirectResponse
     {
-        $this->authorize('delete', $portfolioItem);
+        $this->authorize('delete', $portfolio);
 
-        if ($portfolioItem->file_path) {
-            $this->fileService->delete($portfolioItem->file_path);
+        if ($portfolio->file_path) {
+            $this->fileService->delete($portfolio->file_path);
         }
 
-        $portfolioItem->delete();
+        $portfolio->delete();
 
         return redirect()->route('portfolio.index')
                          ->with('success', 'Portfolio item removed.');
     }
 }
-
