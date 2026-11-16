@@ -1,1 +1,3 @@
 SkillBridge is a web application that connects clients who post projects with freelancers who have verified skills. It covers skill-based matching and discovery, proposal negotiation, milestone-based project execution, escrow-style payment tracking, reputation and reviews, dispute handling, team formation, messaging, and analytics. It is intended for clients, freelancers, and platform administrators.
+
+Start : php artisan server & npm run dev
